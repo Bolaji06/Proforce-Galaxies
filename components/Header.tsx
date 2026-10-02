@@ -15,18 +15,20 @@ export default function Header({
   setHeaderSearchQuery,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-30 h-16 bg-[#111114]/90 border-b border-[#222228] backdrop-blur-md px-6 flex items-center justify-between gap-4">
-      {/* Left: Mobile Toggle & Header Search */}
-      <div className="flex items-center gap-4 flex-1 max-w-md">
+    <header className="sticky top-0 z-30 bg-[#111114] lg:border-b lg:border-[#222228] px-5 sm:px-8 py-3.5 sm:py-0 sm:h-16 flex items-center justify-between gap-4">
+      {/* Mobile: Hamburger Button Only (matching Figma Mobile mockup) */}
+      <div className="lg:hidden flex items-center">
         <button
           onClick={onOpenMobileSidebar}
-          className="lg:hidden p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-white/5 transition-colors"
+          className="p-1 -ml-1 text-neutral-300 hover:text-white transition-colors"
           aria-label="Open menu"
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="h-6 w-6" />
         </button>
+      </div>
 
-        {/* Header Search Input */}
+      {/* Desktop Search Bar */}
+      <div className="hidden lg:flex items-center gap-4 flex-1 max-w-md">
         <div className="relative w-full">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500 pointer-events-none" />
           <input
@@ -39,8 +41,8 @@ export default function Header({
         </div>
       </div>
 
-      {/* Right: Notifications & Profile */}
-      <div className="flex items-center gap-4">
+      {/* Desktop Right Actions: Notifications & Profile */}
+      <div className="hidden lg:flex items-center gap-4">
         {/* Notification Bell */}
         <button
           className="relative p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-white/5 transition-colors"

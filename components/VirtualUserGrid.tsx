@@ -20,7 +20,7 @@ export default function VirtualUserGrid({
   const parentRef = useRef<HTMLDivElement>(null);
   const [columns, setColumns] = useState(3);
 
-  // Dynamically update column count based on parent container width
+  // Dynamically calculate column count (1 on mobile, 2 on tablet, 3 on desktop)
   useEffect(() => {
     const updateColumns = () => {
       if (!parentRef.current) return;
@@ -28,9 +28,9 @@ export default function VirtualUserGrid({
       if (viewMode === "list") {
         setColumns(1);
       } else {
-        if (width < 640) setColumns(1); // Mobile
-        else if (width < 1024) setColumns(2); // Tablet
-        else setColumns(3); // Desktop (MacBook Air 1 in Figma)
+        if (width < 640) setColumns(1); // Mobile: single card stack
+        else if (width < 1024) setColumns(2); // Tablet: 2 columns
+        else setColumns(3); // Desktop: 3 columns (MacBook Air 1 in Figma)
       }
     };
 
@@ -39,7 +39,7 @@ export default function VirtualUserGrid({
     return () => window.removeEventListener("resize", updateColumns);
   }, [viewMode]);
 
-  // Group users into rows based on column count
+  // Group users into rows according to column count
   const rows = React.useMemo(() => {
     const result: User[][] = [];
     for (let i = 0; i < users.length; i += columns) {
@@ -48,23 +48,23 @@ export default function VirtualUserGrid({
     return result;
   }, [users, columns]);
 
-  // Virtualizer for smooth 60fps rendering
+  // Virtualizer for smooth 60fps scrolling
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => (viewMode === "grid" ? 230 : 82),
+    estimateSize: () => (viewMode === "grid" ? (columns === 1 ? 215 : 235) : 80),
     overscan: 3,
   });
 
   if (users.length === 0) {
     return (
-      <div className="py-24 flex flex-col items-center justify-center text-center p-8 rounded-3xl bg-[#18181c]/50 border border-white/5">
-        <div className="h-14 w-14 rounded-2xl bg-[#22222a] flex items-center justify-center text-neutral-400 mb-4">
-          <UsersIcon className="h-7 w-7" />
+      <div className="py-20 flex flex-col items-center justify-center text-center p-6 rounded-3xl bg-[#18181c]/50 border border-white/5">
+        <div className="h-12 w-12 rounded-2xl bg-[#22222a] flex items-center justify-center text-neutral-400 mb-3">
+          <UsersIcon className="h-6 w-6" />
         </div>
-        <h3 className="text-base font-semibold text-white">No Users Found</h3>
+        <h3 className="text-sm font-semibold text-white">No Users Found</h3>
         <p className="mt-1 text-xs text-neutral-400 max-w-xs">
-          No directory entries match your current search criteria. Try a different search query.
+          No directory entries match your current search criteria.
         </p>
       </div>
     );
@@ -73,7 +73,7 @@ export default function VirtualUserGrid({
   return (
     <div
       ref={parentRef}
-      className="h-[calc(100vh-280px)] min-h-[500px] overflow-y-auto overflow-x-hidden pr-1.5 custom-scrollbar"
+      className="h-[calc(100vh-210px)] sm:h-[calc(100vh-270px)] min-h-[460px] overflow-y-auto overflow-x-hidden w-full"
       style={{
         contain: "strict",
       }}
@@ -101,7 +101,7 @@ export default function VirtualUserGrid({
                 height: `${virtualRow.size}px`,
                 transform: `translateY(${virtualRow.start}px)`,
               }}
-              className="pb-4"
+              className="pb-3.5 sm:pb-5"
             >
               {viewMode === "list" ? (
                 <div className="w-full">
@@ -113,7 +113,7 @@ export default function VirtualUserGrid({
                 </div>
               ) : (
                 <div
-                  className="grid gap-4 sm:gap-6 w-full"
+                  className="grid gap-3.5 sm:gap-6 w-full"
                   style={{
                     gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
                   }}

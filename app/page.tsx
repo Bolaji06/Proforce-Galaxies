@@ -56,14 +56,14 @@ function UserDirectoryContent() {
         />
 
         {/* Directory Content Container */}
-        <main className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 sm:py-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 overflow-y-auto px-4 sm:px-8 pt-2 sm:pt-6 pb-6 max-w-7xl w-full mx-auto">
           {/* Top Row: Title + Add New Button */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center justify-between gap-4 mb-4 sm:mb-6">
             <div>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
                 User directory
               </h1>
-              <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+              <p className="text-xs sm:text-sm text-[#8e8e93] mt-1">
                 Find a list of users below
               </p>
             </div>
@@ -71,7 +71,7 @@ function UserDirectoryContent() {
             {/* + Add new Button */}
             <button
               onClick={() => setIsAddUserOpen(true)}
-              className="self-start sm:self-auto flex items-center gap-2 px-4 py-2 rounded-xl bg-[#202026] hover:bg-[#282830] border border-[#2e2e38] text-xs font-semibold text-white transition-all active:scale-95 shadow-sm hover:border-purple-500/30 cursor-pointer"
+              className="flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#1e1e24] hover:bg-[#282830] border border-[#2a2a34] text-xs font-semibold text-white transition-all active:scale-95 shadow-sm hover:border-purple-500/30 cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5 text-neutral-300" />
               <span>Add new</span>
@@ -79,9 +79,9 @@ function UserDirectoryContent() {
           </div>
 
           {/* Search Bar & View Mode Toggle Controls */}
-          <div className="flex items-center justify-between gap-3 mb-6">
-            {/* Search Input */}
-            <div className="relative flex-1 max-w-md">
+          <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6">
+            {/* Search Input (Full width on Mobile matching Figma) */}
+            <div className="relative w-full sm:max-w-md">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500 pointer-events-none" />
               <input
                 type="text"
@@ -100,8 +100,8 @@ function UserDirectoryContent() {
               )}
             </div>
 
-            {/* View Mode Switcher (Grid / List) */}
-            <div className="flex items-center p-1 rounded-xl bg-[#18181c] border border-[#26262e] shrink-0">
+            {/* View Mode Switcher: visible on tablet/desktop, hidden on mobile */}
+            <div className="hidden sm:flex items-center p-1 rounded-xl bg-[#18181c] border border-[#26262e] shrink-0">
               <button
                 onClick={() => setViewMode("grid")}
                 className={`p-1.5 rounded-lg transition-all ${
@@ -130,16 +130,15 @@ function UserDirectoryContent() {
           </div>
 
           {/* User Results Counter */}
-          {!isLoading && !isError && (
-            <div className="mb-4 text-[11px] font-medium text-neutral-500">
-              Showing {filteredUsers.length} {filteredUsers.length === 1 ? "user" : "users"}
-              {searchQuery && ` matching "${searchQuery}"`}
+          {!isLoading && !isError && searchQuery && (
+            <div className="mb-3 text-[11px] font-medium text-neutral-500">
+              Found {filteredUsers.length} {filteredUsers.length === 1 ? "user" : "users"} matching &ldquo;{searchQuery}&rdquo;
             </div>
           )}
 
           {/* Content States: Loading, Error, or Virtualized Results */}
           {isLoading ? (
-            <SkeletonLoader viewMode={viewMode} count={9} />
+            <SkeletonLoader viewMode={viewMode} count={6} />
           ) : isError ? (
             <ErrorState
               message={

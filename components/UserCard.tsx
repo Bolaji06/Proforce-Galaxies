@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { User } from "@/lib/types/user";
-import { User as UserIcon, Mail, Phone, MapPin } from "lucide-react";
+import { Phone, MapPin } from "lucide-react";
 
 interface UserCardProps {
   user: User;
@@ -13,25 +13,17 @@ interface UserCardProps {
 export default function UserCard({ user, viewMode, onClick }: UserCardProps) {
   const [imgError, setImgError] = useState(false);
 
-  // Derive initials for avatar fallback
-  const initials = user.name
-    ? user.name
-        .split(" ")
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((n) => n[0].toUpperCase())
-        .join("")
-    : "U";
+  const hasAvatar = Boolean(user.avatar && !imgError && user.avatar.trim() !== "");
 
   if (viewMode === "list") {
     return (
       <div
         onClick={onClick}
-        className="group flex items-center justify-between p-4 rounded-2xl bg-[#18181c] border border-[#26262e] hover:border-purple-500/40 hover:bg-[#1e1e24] transition-all cursor-pointer shadow-sm hover:shadow-purple-950/20"
+        className="group flex items-center justify-between p-4 rounded-2xl bg-[#18181c] border border-[#24242c] hover:border-purple-500/40 hover:bg-[#1e1e24] transition-all cursor-pointer shadow-sm"
       >
         <div className="flex items-center gap-4 min-w-0">
-          <div className="relative h-12 w-12 shrink-0 rounded-full overflow-hidden bg-[#26262e] ring-2 ring-white/10 group-hover:ring-purple-500/30 transition-all flex items-center justify-center">
-            {user.avatar && !imgError ? (
+          <div className="relative h-12 w-12 shrink-0 rounded-full overflow-hidden bg-[#1f1f26] border border-[#2e2e3a] flex items-center justify-center">
+            {hasAvatar ? (
               <img
                 src={user.avatar}
                 alt={user.name || "User Avatar"}
@@ -40,22 +32,20 @@ export default function UserCard({ user, viewMode, onClick }: UserCardProps) {
                 loading="lazy"
               />
             ) : (
-              <span className="text-xs font-bold text-neutral-300">
-                {initials}
-              </span>
+              <div className="h-full w-full rounded-full border border-[#343442] bg-[#1a1a24]" />
             )}
           </div>
           <div className="min-w-0">
             <h3 className="text-sm font-semibold text-white truncate group-hover:text-purple-300 transition-colors">
               {user.name || "Unnamed User"}
             </h3>
-            <p className="text-xs text-neutral-400 truncate mt-0.5">
+            <p className="text-xs text-[#8e8e93] truncate mt-0.5">
               {user.email || "No email available"}
             </p>
           </div>
         </div>
 
-        <div className="hidden sm:flex items-center gap-6 text-xs text-neutral-400">
+        <div className="hidden sm:flex items-center gap-6 text-xs text-[#8e8e93]">
           {user.location && (
             <div className="flex items-center gap-1.5">
               <MapPin className="h-3.5 w-3.5 text-neutral-500" />
@@ -73,15 +63,15 @@ export default function UserCard({ user, viewMode, onClick }: UserCardProps) {
     );
   }
 
-  // Grid View Card
+  // Grid View Card (Single card stack on Mobile, 3 columns on Desktop)
   return (
     <div
       onClick={onClick}
-      className="group relative flex flex-col items-center justify-center p-6 sm:p-8 rounded-2xl bg-[#18181c] border border-[#26262e] hover:border-purple-500/40 hover:bg-[#1e1e24] transition-all duration-200 cursor-pointer shadow-sm hover:shadow-xl hover:shadow-purple-950/20"
+      className="group relative flex flex-col items-center justify-center py-7 px-5 sm:py-8 sm:px-6 rounded-2xl sm:rounded-3xl bg-[#18181c] border border-[#24242c] hover:border-purple-500/40 hover:bg-[#1e1e24] transition-all duration-200 cursor-pointer shadow-sm hover:shadow-xl hover:shadow-purple-950/20 w-full"
     >
-      {/* Centered Circular Avatar */}
-      <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-full overflow-hidden bg-[#24242c] ring-2 ring-white/10 group-hover:ring-purple-500/40 transition-all duration-300 flex items-center justify-center shadow-inner">
-        {user.avatar && !imgError ? (
+      {/* Centered Circular Avatar matching Figma */}
+      <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-full overflow-hidden bg-[#1f1f26] border border-[#2e2e3a] flex items-center justify-center">
+        {hasAvatar ? (
           <img
             src={user.avatar}
             alt={user.name || "User"}
@@ -90,19 +80,17 @@ export default function UserCard({ user, viewMode, onClick }: UserCardProps) {
             loading="lazy"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#262630] to-[#1c1c24] text-neutral-300 font-bold text-lg sm:text-xl">
-            {initials}
-          </div>
+          <div className="h-full w-full rounded-full border border-[#343442] bg-[#1a1a24]" />
         )}
       </div>
 
       {/* User Name */}
-      <h3 className="mt-4 text-sm sm:text-base font-semibold text-white text-center truncate w-full group-hover:text-purple-300 transition-colors">
+      <h3 className="mt-4 text-[15px] sm:text-base font-bold text-white text-center truncate w-full group-hover:text-purple-300 transition-colors">
         {user.name || "Unnamed User"}
       </h3>
 
       {/* User Email */}
-      <p className="mt-1 text-xs text-neutral-400 text-center truncate w-full">
+      <p className="mt-1 text-xs text-[#8e8e93] text-center truncate w-full">
         {user.email || "No email available"}
       </p>
     </div>
